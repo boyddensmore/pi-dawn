@@ -1,7 +1,7 @@
 Pi Dawn
 =======
 
-Use a Raspberry Pi connected to WS2801-based RGB LED strip to
+Use a Raspberry Pi connected to WS281x-based RGB LED strip to
 wake you up in the morning.
 
 Setup

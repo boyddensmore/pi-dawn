@@ -1,12 +1,15 @@
-import attr
+mport attr
 
-import Adafruit_WS2801
-import Adafruit_GPIO.SPI
+from rpi_ws281x import PixelStrip, Color
 
 from pi_dawn import graphics
 
-SPI_PORT = 0
-SPI_DEVICE = 0
+LED_PIN = 18          # GPIO pin connected to the pixels (18 uses PWM!).
+LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_DMA = 10          # DMA channel to use for generating signal (try 10)
+LED_BRIGHTNESS = 30   # Set to 0 for darkest and 255 for brightest
+LED_INVERT = False    # True to invert the signal (when using NPN transistor level shift)
+LED_CHANNEL = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 
 @attr.s(init=False)
@@ -21,8 +24,11 @@ class LedScreen:
         self.lut_g = self.build_gamma_lut(gamma_g)
         self.lut_b = self.build_gamma_lut(gamma_b)
         self.bayer_map = self.build_bayer_map()
-        self.pixels = Adafruit_WS2801.WS2801Pixels(width*height, spi=Adafruit_GPIO.SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+        self.pixels = PixelStrip(width*height, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+        self.pixels.begin()
 
+        
+        
     def make_surface(self):
         return graphics.Surface(self)
 
@@ -39,7 +45,7 @@ class LedScreen:
                     offset = self.height - y - 1 + x * self.height
                 else:
                     offset = y + x * self.height
-                self.pixels.set_pixel_rgb(offset, r, b, g)
+                self.pixels.setPixelColor(offset, Color(r, b, g))
         self.pixels.show()
 
     @staticmethod

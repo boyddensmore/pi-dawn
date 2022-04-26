@@ -1,4 +1,4 @@
-mport attr
+import attr
 
 from rpi_ws281x import PixelStrip, Color
 
